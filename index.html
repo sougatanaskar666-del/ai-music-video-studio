@@ -1007,53 +1007,182 @@ function copyText(id) {
 }
 
 
-function copyCompleteProject() {
+async function buildProject() {
 
-  navigator.clipboard.writeText(
-    finalProjectText
-  );
+  const songType = document.getElementById("songType").value;
+  const visualStyle = document.getElementById("visualStyle").value;
+  const duration = parseInt(document.getElementById("duration").value);
+  const language = document.getElementById("language").value;
+  const audience = document.getElementById("audience").value;
 
-  alert("Complete project copied!");
-}
+  const ageGroup = audience === "Kids"
+    ? document.getElementById("ageGroup").value
+    : "Not Applicable";
 
+  const topic = document.getElementById("topic").value.trim();
 
-function downloadProject() {
+  if (!topic) {
+    alert("Please enter a song topic.");
+    return;
+  }
 
-  const blob = new Blob(
-    [finalProjectText],
-    { type: "text/plain" }
-  );
+  const button = document.querySelector(".primary");
+  const oldButtonText = button.innerText;
 
-  const url =
-    URL.createObjectURL(blob);
+  button.disabled = true;
+  button.innerText = "CREATING WITH AI...";
 
-  const a =
-    document.createElement("a");
+  document.getElementById("success").style.display = "none";
 
-  a.href = url;
+  try {
 
-  a.download =
-    "AI-Music-Video-Project.txt";
+    const response = await fetch(
+      "https://ai-music-video-studio.sougatanaskar666.workers.dev/generate",
+      {
+        method: "POST",
 
-  a.click();
+        headers: {
+          "Content-Type": "application/json"
+        },
 
-  URL.revokeObjectURL(url);
-}
+        body: JSON.stringify({
+          topic,
+          songType,
+          visualStyle,
+          duration,
+          language,
+          audience: audience === "Kids"
+            ? `${audience}, Age ${ageGroup}`
+            : audience
+        })
+      }
+    );
 
-toggleAge();
+    const data = await response.json();
 
+    if (!response.ok || !data.success) {
+      console.error(data);
 
-async function testWorkerConnection() {
-  const response = await fetch(
-    "https://ai-music-video-studio.sougatanaskar666.workers.dev/",
-    {
-      method: "GET"
+      throw new Error(
+        data.error ||
+        data.details?.error?.message ||
+        "AI generation failed."
+      );
     }
-  );
 
-  const data = await response.json();
-  console.log("Worker connected:", data);
-  return data;
-}</script>
-</body>
-  </html>
+    const result = data.result;
+
+    const sceneCount = data.sceneCount || result.scenes.length;
+
+
+    const summary = `
+<strong>Title:</strong> ${result.songTitle}<br>
+<strong>Topic:</strong> ${topic}<br>
+<strong>Song Type:</strong> ${songType}<br>
+<strong>Visual Style:</strong> ${visualStyle}<br>
+<strong>Duration:</strong> ${duration} Minute${duration > 1 ? "s" : ""}<br>
+<strong>Language:</strong> ${language}<br>
+<strong>Audience:</strong> ${audience}<br>
+<strong>Age Group:</strong> ${ageGroup}<br>
+<strong>Total Scenes:</strong> ${sceneCount}<br><br>
+<strong>Video Concept:</strong><br>
+${result.videoConcept}
+`;
+
+    document.getElementById("projectSummary").innerHTML = summary;
+
+
+    document.getElementById("lyricsBox").textContent =
+      result.completeLyrics;
+
+
+    const characters = result.characters.map(char => ({
+      name: char.name,
+      role: char.role,
+      age: ageGroup,
+      info:
+        `${char.appearance}
+
+Clothing:
+${char.clothing}
+
+Personality:
+${char.personality}`,
+      masterPrompt: char.consistencyPrompt
+    }));
+
+    renderCharacters(characters);
+
+
+    document.getElementById("sceneInfo").innerHTML =
+      `<strong>${sceneCount} AI-GENERATED SCENES</strong><br>
+      Every scene follows the generated lyrics/script and story continuity.`;
+
+
+    const scenes = result.scenes.map(scene => ({
+      number: scene.sceneNumber,
+      characters: scene.characters,
+      shot: `${scene.camera}
+
+ACTION:
+${scene.action}
+
+LYRIC / SCRIPT:
+${scene.lyricOrScript}`,
+      imagePrompt: scene.masterImagePrompt,
+      motionPrompt: scene.masterMotionPrompt
+    }));
+
+    renderScenes(scenes);
+
+
+    finalProjectText = createCompleteExport(
+      topic,
+      songType,
+      visualStyle,
+      duration,
+      language,
+      audience,
+      ageGroup,
+      result.completeLyrics,
+      characters,
+      scenes
+    );
+
+
+    document.getElementById("output").classList.remove("hidden");
+
+    document.getElementById("success").innerText =
+      "✅ AI project created successfully.";
+
+    document.getElementById("success").style.display = "block";
+
+
+    setTimeout(() => {
+
+      document.getElementById("output").scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }, 300);
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    alert(
+      "AI Project তৈরি হয়নি.\n\n" +
+      error.message
+    );
+
+  }
+
+  finally {
+
+    button.disabled = false;
+    button.innerText = oldButtonText;
+
+  }
+}
