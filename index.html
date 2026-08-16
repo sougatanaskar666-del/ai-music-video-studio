@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Music Video Prompt Studio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b0d;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11,11,13,0.96);
+      border-bottom: 1px solid #26262b;
+      padding: 18px 16px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    header p {
+      margin-top: 5px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: auto;
+      padding: 20px 14px 80px;
+    }
+
+    .card {
+      background: #151518;
+      border: 1px solid #2b2b31;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      color: #aaa;
+      font-size: 12px;
+      margin: 14px 0 7px;
+      font-weight: bold;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      background: #0d0d10;
+      color: #fff;
+      border: 1px solid #38383f;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: #fff;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .primary {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      margin-top: 18px;
+    }
+
+    .secondary {
+      width: 100%;
+      background: #232328;
+      color: #fff;
+      border: 1px solid #3b3b42;
+      margin-top: 10px;
+    }
+
+    .two-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .summary {
+      background: #101013;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .character-card,
+    .scene-card {
+      background: #101013;
+      border: 1px solid #29292f;
+      border-radius: 16px;
+      padding: 15px;
+      margin-top: 14px;
+    }
+
+    .character-card h3,
+    .scene-card h3 {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      color: #9a9a9f;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      color: #d4d4d7;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .prompt-box {
+      background: #09090b;
+      border: 1px solid #242429;
+      border-radius: 12px;
+      padding: 12px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .copy-btn {
+      margin-top: 9px;
+      background: #25252a;
+      color: #fff;
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #27272c;
+      border: 1px solid #3b3b41;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      margin: 3px 4px 3px 0;
+    }
+
+    .success {
+      background: #122117;
+      color: #8ef0a8;
+      border: 1px solid #274d31;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 12px;
+      display: none;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      color: #555;
+      font-size: 11px;
+      padding: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎵 AI Music Video Prompt Studio</h1>
+  <p>Prompt Production Engine — Free Prototype</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>1. Project Setup</h2>
+
+    <label>Song Type</label>
+    <select id="songType">
+      <option>Kids Rhyme / Nursery Song</option>
+      <option>Love Song</option>
+      <option>Romantic Song</option>
+      <option>Patriotic Song</option>
+      <option>Emotional / Sad Song</option>
+      <option>Friendship Song</option>
+      <option>Motivational Song</option>
+      <option>Birthday Song</option>
+      <option>Family Song</option>
+      <option>Festival Song</option>
+      <option>Nature Song</option>
+      <option>Educational Song</option>
+      <option>Devotional / Spiritual Song</option>
+      <option>Folk Song</option>
+      <option>Dance / Fun Song</option>
+      <option>Cinematic Song</option>
+    </select>
+
+    <label>Visual Style</label>
+    <select id="visualStyle">
+      <option>Premium Cinematic 3D Animation</option>
+      <option>Realistic 3D CGI</option>
+      <option>Cute 3D Cartoon</option>
+      <option>Soft Pastel 3D</option>
+      <option>Fantasy 3D</option>
+      <option>Ghibli-Inspired</option>
+      <option>Anime</option>
+      <option>2D Cartoon</option>
+      <option>Storybook Illustration</option>
+      <option>Watercolor Animation</option>
+      <option>Claymation</option>
+      <option>Stop-Motion Style</option>
+      <option>Indian Kids Cartoon Style</option>
+      <option>Cinematic Realism</option>
+    </select>
+
+    <label>Total Duration</label>
+    <select id="duration">
+      <option value="1">1 Minute</option>
+      <option value="2">2 Minutes</option>
+      <option value="3">3 Minutes</option>
+      <option value="4">4 Minutes</option>
+      <option value="5">5 Minutes</option>
+    </select>
+
+    <label>Language</label>
+    <select id="language">
+      <option>Bengali</option>
+      <option>Hindi</option>
+      <option>English</option>
+      <option>Bengali + Hindi</option>
+      <option>Bengali + English</option>
+      <option>Hindi + English</option>
+    </select>
+
+    <label>Audience</label>
+    <select id="audience" onchange="toggleAge()">
+      <option>Kids</option>
+      <option>Teen</option>
+      <option>General Audience</option>
+      <option>Adult</option>
+    </select>
+
+    <div id="ageBox">
+      <label>Kids Age Group</label>
+      <select id="ageGroup">
+        <option>2–4</option>
+        <option>4–6</option>
+        <option>6–8</option>
+        <option>8–10</option>
+        <option>10–12</option>
+      </select>
+    </div>
+
+    <label>Song Topic</label>
+    <textarea id="topic" placeholder="Example: ফুল শেখার গান"></textarea>
+
+    <button class="primary" onclick="buildProject()">
+      CREATE PROJECT
+    </button>
+
+    <div id="success" class="success">
+      ✅ Project created successfully.
+    </div>
+  </div>
+
+
+  <div id="output" class="hidden">
+
+    <div class="card">
+      <h2>2. Project Summary</h2>
+      <div id="projectSummary" class="summary"></div>
+    </div>
+
+
+    <div class="card">
+      <h2>3. Lyrics / Song Structure</h2>
+
+      <div id="lyricsBox" class="prompt-box"></div>
+
+      <button class="copy-btn" onclick="copyText('lyricsBox')">
+        📋 COPY LYRICS
+      </button>
+    </div>
+
+
+    <div class="card">
+      <h2>4. Character Prompts</h2>
+      <div id="characters"></div>
+    </div>
+
+
+    <div class="card">
+      <h2>5. Storyboard Scenes</h2>
+      <div id="sceneInfo" class="summary"></div>
+      <div id="scenes"></div>
+    </div>
+
+
+    <div class="card">
+      <h2>6. Final Export</h2>
+
+      <div class="two-buttons">
+        <button class="secondary" onclick="copyCompleteProject()">
+          📋 COPY ALL
+        </button>
+
+        <button class="secondary" onclick="downloadProject()">
+          ⬇️ DOWNLOAD
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  AI Music Video Prompt Studio — Prototype V1
+</footer>
+
+
+<script>
+
+let finalProjectText = "";
+
+function toggleAge() {
+  const audience = document.getElementById("audience").value;
+  const ageBox = document.getElementById("ageBox");
+
+  ageBox.style.display = audience === "Kids" ? "block" : "none";
+}
+
+
+function buildProject() {
+
+  const songType = document.getElementById("songType").value;
+  const visualStyle = document.getElementById("visualStyle").value;
+  const duration = parseInt(document.getElementById("duration").value);
+  const language = document.getElementById("language").value;
+  const audience = document.getElementById("audience").value;
+  const ageGroup = audience === "Kids"
+    ? document.getElementById("ageGroup").value
+    : "Not Applicable";
+
+  const topic = document.getElementById("topic").value.trim();
+
+  if (!topic) {
+    alert("Please enter a song topic.");
+    return;
+  }
+
+  const sceneCount = duration * 9;
+
+  const summary = `
+<strong>Topic:</strong> ${topic}<br>
+<strong>Song Type:</strong> ${songType}<br>
+<strong>Visual Style:</strong> ${visualStyle}<br>
+<strong>Duration:</strong> ${duration} Minute${duration > 1 ? "s" : ""}<br>
+<strong>Language:</strong> ${language}<br>
+<strong>Audience:</strong> ${audience}<br>
+<strong>Age Group:</strong> ${ageGroup}<br>
+<strong>Total Scenes:</strong> ${sceneCount}
+`;
+
+  document.getElementById("projectSummary").innerHTML = summary;
+
+
+  const lyrics = generateLyrics(topic, songType, language, duration);
+
+  document.getElementById("lyricsBox").textContent = lyrics;
+
+
+  const characters = generateCharacters(
+    topic,
+    songType,
+    visualStyle,
+    audience,
+    ageGroup
+  );
+
+  renderCharacters(characters);
+
+
+  document.getElementById("sceneInfo").innerHTML =
+    `<strong>${sceneCount} SCENES PLANNED</strong><br>
+    1 Minute = 9 Scenes • 2 Minutes = 18 • 3 Minutes = 27 • 4 Minutes = 36 • 5 Minutes = 45`;
+
+
+  const scenes = generateScenes(
+    sceneCount,
+    topic,
+    lyrics,
+    characters,
+    visualStyle
+  );
+
+  renderScenes(scenes);
+
+
+  finalProjectText = createCompleteExport(
+    topic,
+    songType,
+    visualStyle,
+    duration,
+    language,
+    audience,
+    ageGroup,
+    lyrics,
+    characters,
+    scenes
+  );
+
+
+  document.getElementById("output").classList.remove("hidden");
+
+  document.getElementById("success").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("output").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 300);
+}
+
+
+function generateLyrics(topic, songType, language, duration) {
+
+  return `
+🎵 SONG TITLE
+${topic}
+
+🎼 SONG TYPE
+${songType}
+
+🌐 LANGUAGE
+${language}
+
+⏱ TARGET LENGTH
+${duration} Minute${duration > 1 ? "s" : ""}
+
+[INTRO]
+${topic} — আমাদের গল্প শুরু হলো...
+
+[VERSE 1]
+বিষয়টিকে সহজ, সুন্দর ও মনে রাখার মতোভাবে পরিচয় করিয়ে দেওয়া হবে।
+
+[CHORUS]
+মূল কথাটি আনন্দময় ও সহজ ভাষায় পুনরাবৃত্তি হবে।
+
+[VERSE 2]
+গল্প ও চরিত্রের মাধ্যমে বিষয়টি আরও এগিয়ে যাবে।
+
+[CHORUS]
+মূল বার্তা আবার ফিরে আসবে।
+
+[ENDING]
+একটি সুন্দর, স্মরণীয় ও আবেগপূর্ণ সমাপ্তি।
+`.trim();
+}
+
+
+function generateCharacters(
+  topic,
+  songType,
+  visualStyle,
+  audience,
+  ageGroup
+) {
+
+  let characters = [];
+
+  if (audience === "Kids") {
+
+    characters.push({
+      name: "Main Child",
+      role: "Main Protagonist",
+      age: ageGroup,
+      info: "Curious, cheerful, expressive child who leads the story."
+    });
+
+    characters.push({
+      name: "Best Friend",
+      role: "Supporting Character",
+      age: ageGroup,
+      info: "Friendly, playful companion who joins important moments."
+    });
+
+    if (
+      songType.includes("Educational") ||
+      topic.toLowerCase().includes("school") ||
+      topic.includes("শেখ")
+    ) {
+      characters.push({
+        name: "Teacher",
+        role: "Teacher / Mentor",
+        age: "35–40",
+        info: "Warm, intelligent and approachable teacher. Never elderly unless explicitly required."
+      });
+    }
+
+  } else {
+
+    characters.push({
+      name: "Main Character",
+      role: "Protagonist",
+      age: "Adult",
+      info: "Primary emotional and visual focus of the music video."
+    });
+
+    characters.push({
+      name: "Supporting Character",
+      role: "Supporting Role",
+      age: "Adult",
+      info: "Supports the main character where the story naturally requires interaction."
+    });
+
+  }
+
+
+  characters.forEach(c => {
+
+    c.masterPrompt = `
+MASTER CHARACTER IMAGE PROMPT
+
+Create ${c.name}, ${c.role}.
+
+Age:
+${c.age}
+
+Character Personality:
+${c.info}
+
+Visual Style:
+${visualStyle}
+
+Create a premium, highly consistent recurring character design.
+
+Maintain:
+- exact facial identity
+- hairstyle
+- age
+- skin tone
+- costume
+- footwear
+- body proportions
+- accessories
+- color palette
+
+Neutral full-body character reference pose.
+Clean readable silhouette.
+Professional character-design presentation.
+High detail.
+Consistent identity suitable for repeated scene generation.
+
+Do NOT randomly redesign this character in future scenes.
+`.trim();
+
+  });
+
+  return characters;
+}
+
+
+function renderCharacters(characters) {
+
+  const container = document.getElementById("characters");
+
+  container.innerHTML = "";
+
+  characters.forEach((char, index) => {
+
+    const div = document.createElement("div");
+
+    div.className = "character-card";
+
+    div.innerHTML = `
+      <h3>👤 ${char.name}</h3>
+
+      <div class="meta">
+        ${char.role} • Age: ${char.age}
+      </div>
+
+      <div class="section-title">
+        Character Info
+      </div>
+
+      <div class="prompt-box">
+        ${char.info}
+      </div>
+
+      <div class="section-title">
+        Master Character Prompt
+      </div>
+
+      <div class="prompt-box" id="charPrompt${index}"></div>
+
+      <button class="copy-btn"
+        onclick="copyText('charPrompt${index}')">
+        📋 COPY CHARACTER PROMPT
+      </button>
+    `;
+
+    container.appendChild(div);
+
+    document.getElementById(
+      `charPrompt${index}`
+    ).textContent = char.masterPrompt;
+
+  });
+
+}
+
+
+function generateScenes(
+  sceneCount,
+  topic,
+  lyrics,
+  characters,
+  visualStyle
+) {
+
+  const scenes = [];
+
+  const shotTypes = [
+    "Wide Cinematic Shot",
+    "Medium Character Shot",
+    "Close-Up",
+    "Tracking Shot",
+    "Low Angle Shot",
+    "Over-the-Shoulder Shot",
+    "Wide Environmental Shot",
+    "Gentle Dolly-In",
+    "Cinematic Group Shot"
+  ];
+
+
+  for (let i = 1; i <= sceneCount; i++) {
+
+    let requiredCharacters = [];
+
+    if (i % 5 === 0 && characters.length >= 2) {
+      requiredCharacters = [
+        characters[0].name,
+        characters[1].name
+      ];
+    }
+
+    else if (i % 7 === 0 && characters.length >= 3) {
+      requiredCharacters = [
+        characters[0].name,
+        characters[2].name
+      ];
+    }
+
+    else {
+      requiredCharacters = [
+        characters[(i - 1) % characters.length].name
+      ];
+    }
+
+
+    const shot =
+      shotTypes[(i - 1) % shotTypes.length];
+
+
+    const imagePrompt = `
+MASTER IMAGE PROMPT — SCENE ${i}
+
+Topic:
+${topic}
+
+Visual Style:
+${visualStyle}
+
+Characters Required:
+${requiredCharacters.join(", ")}
+
+Create Scene ${i} as a visually distinct cinematic moment.
+
+Shot:
+${shot}
+
+Maintain exact identity consistency for every recurring character.
+
+Use only the characters listed under Characters Required.
+
+Do NOT add unrelated characters.
+
+Preserve:
+- established faces
+- hairstyles
+- costumes
+- ages
+- proportions
+- accessories
+
+Create strong cinematic composition, readable storytelling, professional lighting, depth, environment detail and polished production quality.
+
+This scene must visually continue the same music-video world while still feeling different from the previous scene.
+`.trim();
+
+
+    const motionPrompt = `
+MASTER MOTION PROMPT — SCENE ${i}
+
+Animate ONLY the established Scene ${i} image.
+
+Characters Required:
+${requiredCharacters.join(", ")}
+
+Camera:
+${shot}
+
+Create natural character movement appropriate to the music and story.
+
+Maintain exact character identity.
+
+Do NOT:
+- redesign characters
+- change costumes
+- replace faces
+- morph bodies
+- introduce random characters
+
+Use smooth cinematic motion.
+
+Keep character actions simple, readable and emotionally appropriate.
+
+Camera movement must support the scene rather than distract from it.
+
+Maintain continuity with the previous and next scenes.
+`.trim();
+
+
+    scenes.push({
+      number: i,
+      characters: requiredCharacters,
+      shot,
+      imagePrompt,
+      motionPrompt
+    });
+
+  }
+
+  return scenes;
+}
+
+
+function renderScenes(scenes) {
+
+  const container = document.getElementById("scenes");
+
+  container.innerHTML = "";
+
+  scenes.forEach(scene => {
+
+    const index = scene.number;
+
+    const badges = scene.characters
+      .map(name =>
+        `<span class="badge">👤 ${name}</span>`
+      )
+      .join("");
+
+
+    const div = document.createElement("div");
+
+    div.className = "scene-card";
+
+    div.innerHTML = `
+
+      <h3>🎬 SCENE ${scene.number}</h3>
+
+      <div class="section-title">
+        Characters Required
+      </div>
+
+      <div>
+        ${badges}
+      </div>
+
+      <div class="section-title">
+        Camera
+      </div>
+
+      <div class="prompt-box">
+        ${scene.shot}
+      </div>
+
+      <div class="section-title">
+        Master Image Prompt
+      </div>
+
+      <div class="prompt-box"
+           id="imagePrompt${index}">
+      </div>
+
+      <button class="copy-btn"
+        onclick="copyText('imagePrompt${index}')">
+        📋 COPY IMAGE PROMPT
+      </button>
+
+      <div class="section-title">
+        Master Motion Prompt
+      </div>
+
+      <div class="prompt-box"
+           id="motionPrompt${index}">
+      </div>
+
+      <button class="copy-btn"
+        onclick="copyText('motionPrompt${index}')">
+        📋 COPY MOTION PROMPT
+      </button>
+    `;
+
+
+    container.appendChild(div);
+
+
+    document.getElementById(
+      `imagePrompt${index}`
+    ).textContent = scene.imagePrompt;
+
+
+    document.getElementById(
+      `motionPrompt${index}`
+    ).textContent = scene.motionPrompt;
+
+  });
+
+}
+
+
+function createCompleteExport(
+  topic,
+  songType,
+  visualStyle,
+  duration,
+  language,
+  audience,
+  ageGroup,
+  lyrics,
+  characters,
+  scenes
+) {
+
+  let text = `
+AI MUSIC VIDEO PROMPT STUDIO
+COMPLETE PROJECT
+
+================================
+
+TOPIC
+${topic}
+
+SONG TYPE
+${songType}
+
+VISUAL STYLE
+${visualStyle}
+
+DURATION
+${duration} Minute${duration > 1 ? "s" : ""}
+
+LANGUAGE
+${language}
+
+AUDIENCE
+${audience}
+
+AGE GROUP
+${ageGroup}
+
+================================
+
+COMPLETE LYRICS
+
+${lyrics}
+
+================================
+
+CHARACTER MASTER PROMPTS
+
+`;
+
+
+  characters.forEach((char, i) => {
+
+    text += `
+
+CHARACTER ${i + 1}
+NAME: ${char.name}
+ROLE: ${char.role}
+AGE: ${char.age}
+
+INFO:
+${char.info}
+
+${char.masterPrompt}
+
+--------------------------------
+
+`;
+
+  });
+
+
+  text += `
+
+================================
+
+STORYBOARD
+
+TOTAL SCENES:
+${scenes.length}
+
+`;
+
+
+  scenes.forEach(scene => {
+
+    text += `
+
+================================
+
+SCENE ${scene.number}
+
+CHARACTERS REQUIRED:
+${scene.characters.join(", ")}
+
+CAMERA:
+${scene.shot}
+
+${scene.imagePrompt}
+
+${scene.motionPrompt}
+
+`;
+
+  });
+
+
+  return text.trim();
+}
+
+
+function copyText(id) {
+
+  const text =
+    document.getElementById(id).innerText;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Copied!");
+}
+
+
+function copyCompleteProject() {
+
+  navigator.clipboard.writeText(
+    finalProjectText
+  );
+
+  alert("Complete project copied!");
+}
+
+
+function downloadProject() {
+
+  const blob = new Blob(
+    [finalProjectText],
+    { type: "text/plain" }
+  );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    "AI-Music-Video-Project.txt";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+toggleAge();
+
+</script>
+
+</body>
+  </html>
